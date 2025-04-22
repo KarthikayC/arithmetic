@@ -1,6 +1,6 @@
 package arbitraryarithmetic;
 
-class AFloat {
+public class AFloat {
     private String num = "0";
 
     public AFloat(String num) {

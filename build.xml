@@ -2,9 +2,16 @@
     <property name="src.dir" value="arbitraryarithmetic"/>
     <property name="build.dir" value="build"/>
 
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete file="arbitraryarithmetic/aarithmetic.jar"/>
+    </target>
+
     <target name="compile">
         <mkdir dir="${build.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false">
+            <include name="*.java"/>
+        </javac>
     </target>
 
     <target name="jar" depends="compile">

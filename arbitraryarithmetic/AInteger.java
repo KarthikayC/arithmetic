@@ -1,6 +1,6 @@
 package arbitraryarithmetic;
 
-class AInteger {
+public class AInteger {
     private String num = "0";
 
     public AInteger(String num) {
