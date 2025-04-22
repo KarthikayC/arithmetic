@@ -1,0 +1,14 @@
+<project name="arbitraryarithmetic" default="jar" basedir=".">
+    <property name="src.dir" value="arbitraryarithmetic"/>
+    <property name="build.dir" value="build"/>
+
+    <target name="compile">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="arbitraryarithmetic/aarithmetic.jar" basedir="${build.dir}"/>
+        <delete dir="${build.dir}"/>
+    </target>
+</project>
