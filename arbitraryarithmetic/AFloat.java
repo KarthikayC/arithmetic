@@ -11,9 +11,38 @@ public class AFloat {
         return new AFloat(input);
     }
 
+    public boolean inputChecker() {
+        int count = 0, asc_value;
+        for (int i = 0; i < this.num.length(); i++) {
+            asc_value = this.num.charAt(i) - '0';
+            if (0 <= asc_value && asc_value <= 9) {
+                
+            } else if (asc_value == -2) {
+                count++;
+                if (count > 1) {
+                    return false;
+                }
+            } else{
+                if (i == 0 && asc_value == -3) {
+                    
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public String add(AFloat s) {
         String n1 = this.num, n2 = s.num;
         int index1, index2, c = 0;
+
+        if (this.inputChecker() && s.inputChecker()) {
+
+        } else {
+            throw new IllegalArgumentException("Invalid input");
+        }
 
         if (n1.charAt(0) == '-') {
             if (n2.charAt(0) == '-') {
@@ -92,6 +121,12 @@ public class AFloat {
     public String sub(AFloat s) {
         String n1 = this.num, n2 = s.num;
         int index1, index2;
+        
+        if (this.inputChecker() && s.inputChecker()) {
+
+        } else {
+            throw new IllegalArgumentException("Invalid input");
+        }
 
         if (n1.charAt(0) == '-') {
             if (n2.charAt(0) == '-') {
@@ -168,6 +203,12 @@ public class AFloat {
     public String mul(AFloat s) {
         String n1 = this.num, n2 = s.num;
         int index1, index2, c = 1;
+        
+        if (this.inputChecker() && s.inputChecker()) {
+
+        } else {
+            throw new IllegalArgumentException("Invalid input");
+        }
 
         if (n1.charAt(0) == '-') {
             c *= -1;
@@ -228,7 +269,13 @@ public class AFloat {
     public String div(AFloat s) {
         String quotient = "", n1 = this.num, n2 = s.num;
         int index1, index2, c = 1;
-        
+                
+        if (this.inputChecker() && s.inputChecker()) {
+
+        } else {
+            throw new IllegalArgumentException("Invalid input");
+        }
+
         if (n1.charAt(0) == '-') {
             c *= -1;
             n1 = n1.substring(1);
