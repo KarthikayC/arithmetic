@@ -352,7 +352,7 @@ public class AFloat {
         }
 
         AInteger temp5 = new AInteger(temp2);
-        for (int i = 0; i < 1020 + length; i++) {
+        for (int i = 0; i < 50 + length; i++) {
             if (i <= temp1.length() - temp2.length()) {
                 temp3 += temp1.charAt(i + temp2.length() - 1);
             } else {
@@ -386,10 +386,24 @@ public class AFloat {
             }
         }
 
+        for (int i = 0; i < quotient.length(); i++) {
+            if (quotient.charAt(0) - '0' == 0) {
+                quotient = quotient.substring(1);
+            } else {
+                break;
+            }
+        }
+
         if (length == 0) {
+            int rev_length = i2.div(i1).length();
+            for (int i = 0; i < rev_length - 1; i++) {
+                quotient = "0" + quotient;
+            }
+
             quotient = "0." + quotient;
         } else {
-            quotient = quotient.substring(0, length) + "." + quotient.substring(length, 1000 + length);
+
+            quotient = quotient.substring(0, length) + "." + quotient.substring(length, 30 + length);
         }
 
         if (c == -1) {
@@ -401,17 +415,6 @@ public class AFloat {
                 quotient = quotient.substring(0, quotient.length() - 1);
             } else if (quotient.charAt(quotient.length() - 1) == '.') {
                 quotient = quotient + "0";
-                break;
-            } else {
-                break;
-            }
-        }
-
-        for (int i = 0; i < quotient.length(); i++) {
-            if (quotient.charAt(0) - '0' == 0) {
-                quotient = quotient.substring(1);
-            } else if (quotient.charAt(0) == '.') {
-                quotient = "0" + quotient;
                 break;
             } else {
                 break;
