@@ -115,6 +115,9 @@ public class AFloat {
             }
         }
 
+        int index = sum.indexOf('.');
+        sum = sum.substring(0, index + 1) + sum.substring(index + 1, Math.min(sum.length() - index - 1, 30 + index + 1));
+
         return sum;
     }
 
@@ -197,6 +200,9 @@ public class AFloat {
             }
         }
 
+        int index = dif.indexOf('.');
+        dif = dif.substring(0, index + 1) + dif.substring(index + 1, Math.min(dif.length() - index - 1, 30 + index + 1));
+
         return dif;
     }
 
@@ -262,6 +268,9 @@ public class AFloat {
         if (c == -1) {
             product = "-" + product;
         }
+
+        int index = product.indexOf('.');
+        product = product.substring(0, index + 1) + product.substring(index + 1, Math.min(product.length() - index - 1, 30 + index + 1));
         
         return new StringBuilder(product).toString();
     }
