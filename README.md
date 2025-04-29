@@ -8,7 +8,7 @@ This library provides classes and methods to perform arithmetic operations (addi
 
 It is particularly useful when standard Java types (`int`, `long`, `float`, `double`) are insufficient due to overflow or rounding errors. Numbers are stored and operated on as `Strings`, and all calculations are done manually, digit-by-digit, simulating how a human would perform them.
 
-## Features
+## Features#
 
 - Arbitrary length integer arithmetic using the `AInteger` class
 - Arbitrary length and precision floating-point arithmetic using the `AFloat` class
@@ -81,6 +81,34 @@ This library goes beyond these limits, enabling safe computation with any number
 
 - Compile - `javac -cp .:<add the absolute path to the .jar package here> <relative path to your desired file>`
 - Execute - `java -cp .:<absolute path to .jar package> <relative path to your file>`
+
+## Examples
+
+### Execution via Python
+
+```bash
+$ python codeRunner.py int add 80043 230
+Output: 80273
+
+$ python codeRunner.py int sub 11011 -29382
+Output: 40393
+
+python codeRunner.py float div 88332.0 00001.2000
+Output: 73610.0
+```
+
+### Execution via Java
+
+```bash
+$ java MyInfArith float mul -1.01998881 091.98811900
+-93.82685203294839
+
+$ java MyInfArith int add 2000.881 298772
+Invalid input
+
+$ java MyInfArith float div 200000.0 000000.00000
+Division by zero error
+```
 
 ## Conclusion
 
