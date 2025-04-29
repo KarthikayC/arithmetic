@@ -356,6 +356,10 @@ public class AFloat {
             if (i <= temp1.length() - temp2.length()) {
                 temp3 += temp1.charAt(i + temp2.length() - 1);
             } else {
+                if (temp3.equals("0")) {
+                    break;
+                }
+
                 temp3 += '0';
             }
 
@@ -400,25 +404,17 @@ public class AFloat {
                 quotient = "0" + quotient;
             }
 
+            quotient = quotient.substring(0, Math.min(quotient.length(), 30));
             quotient = "0." + quotient;
         } else {
-
-            quotient = quotient.substring(0, length) + "." + quotient.substring(length, 30 + length);
+            quotient = quotient.substring(0, length) + "." + quotient.substring(length, Math.min(quotient.length(), 30 + length));
+            if (quotient.charAt(quotient.length() - 1) == '.') {
+                quotient += "0";
+            }
         }
 
         if (c == -1) {
             quotient = "-" + quotient;
-        }
-
-        for (int i = quotient.length() - 1; i >= 0; i--) {
-            if (quotient.charAt(quotient.length() - 1) - '0' == 0) {
-                quotient = quotient.substring(0, quotient.length() - 1);
-            } else if (quotient.charAt(quotient.length() - 1) == '.') {
-                quotient = quotient + "0";
-                break;
-            } else {
-                break;
-            }
         }
 
         return new StringBuilder(quotient).toString();
