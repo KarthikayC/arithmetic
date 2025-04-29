@@ -1,0 +1,262 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlength{\parskip}{1em}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    
+    {\Huge \textbf{Infinite Precision Arithmetic in Java} \par}
+    \vspace{1cm}
+    
+    {\Large Project Report for CS1023 \par}
+    {\Large Software Development Fundamentals \par}
+    
+    \vspace{2.5cm}
+    
+    {\large \textbf{Submitted by:} \par}
+    \vspace{0.3cm}
+    {\large Karthikay Chandana \par}
+    {\large CS24BTECH11033 \par}
+    
+    \vspace{2cm}
+    
+    {\large \textbf{Date:} \today \par}
+    
+    \vfill
+\end{titlepage}
+
+\section{Abstract}
+
+This Java library contains classes and methods to enable infinite precision arithmetic operations for both integers and floating-point numbers. The core classes, \textbf{AInteger} and \textbf{AFloat}, allow addition, subtraction, multiplication, and division on numbers of arbitrary length and precision, overcoming the limitations of Java's built-in numeric types. The approach is to store numbers as strings and perform arithmetic digit-wise, handling both integer and fractional parts, negative numbers, and arbitrary decimal precision.
+
+\section{Introduction}
+
+Accuracy is crucial in high-stakes computations, where minor inaccuracies can lead to major errors. Built-in Java types like \texttt{int}, \texttt{long}, \texttt{float}, and \texttt{double} have fixed ranges and are prone to overflow or precision loss when dealing with extremely large or small values. This library addresses these limitations by representing numbers as strings and performing arithmetic operations at the digit level, allowing for calculations with arbitrary size and precision.
+
+\textbf{Data range of standard data types in Java:}
+\begin{itemize}
+    \item int: $-2,147,483,648$ to $2,147,483,647$
+    \item long: $-9,223,372,036,854,775,808$ to $9,223,372,036,854,775,807$
+    \item float: $1.40239846 \times 10^{-45}$ to $3.40282347 \times 10^{38}$
+    \item double: $4.94065645841246544 \times 10^{-324}$ to $1.79769313486231570 \times 10^{308}$
+\end{itemize}
+
+\section{Features}
+
+\subsection{AInteger Class}
+\begin{itemize}
+    \item Handles parsing and arithmetic for integers of any size.
+    \item Each \texttt{AInteger} object stores its value as a string.
+    \item Supports addition, subtraction, multiplication, and division.
+    \item All operations are implemented digit-wise, similar to manual arithmetic.
+\end{itemize}
+
+\subsection{AFloat Class}
+\begin{itemize}
+    \item Handles parsing and arithmetic for floating-point numbers of arbitrary precision.
+    \item Each \texttt{AFloat} object stores its value as a string.
+    \item Supports addition, subtraction, multiplication, and division up to 30 digits precision.
+    \item Operations work by aligning decimal points, converting to scaled integers, and reinserting the decimal in the result.
+    \item Uses \texttt{AInteger} internally for core arithmetic on the integer representations.
+\end{itemize}
+
+\subsection{build.xml}
+\begin{itemize}
+    \item A build file that uses Apache Ant to automate the compilation and packaging of the Java project.
+    \item The \texttt{clean} target deletes any previously compiled files and JARs for a fresh build.
+    \item The \texttt{jar} target, which depends on \texttt{compile}, packages the compiled classes into a JAR file named \texttt{aarithmetic.jar} inside the \texttt{arbitraryarithmetic} folder and removes the temporary build directory afterward.
+\end{itemize}
+
+\subsection{aarithmetic.jar}
+\begin{itemize}
+    \item A compiled Java archive (\texttt{.jar}) file that contains the \texttt{AInteger} and \texttt{AFloat} classes used for arbitrary-precision arithmetic.
+    \item It was generated using the Apache Ant build system via the \texttt{build.xml} file.
+    \item The \texttt{.jar} file is used as a dependency during compilation and execution of the main program.
+\end{itemize}
+
+\subsection{MyInfArith.java}
+\begin{itemize}
+    \item The main driver class that accepts command-line arguments to perform arbitrary-precision arithmetic operations.
+    \item Expects exactly four arguments: the number type (\texttt{int} or \texttt{float}), the operation (\texttt{add}, \texttt{sub}, \texttt{mul}, \texttt{div}), and two operands.
+    \item Demonstrates the functionality of the arbitrary precision classes by providing a simple CLI interface.
+\end{itemize}
+
+\subsection{codeRunner.py}
+\begin{itemize}
+    \item A Python script that acts as a wrapper to compile and run the Java class \texttt{MyInfArith} from the command line.
+    \item Accepts four command-line arguments: number type (\texttt{int}/\texttt{float}), operation (\texttt{add}/\texttt{sub}/\texttt{mul}/\texttt{div}), and two operands.
+    \item Simplifies testing by automating the build and execution steps from a single Python command.
+\end{itemize}
+
+\section{Logic}
+
+\subsection{AInteger Class}
+
+\subsubsection{Input Validation}
+The \texttt{inputChecker()} method validates integer numbers by:
+\begin{itemize}
+    \item Permitting an optional leading minus sign
+    \item Rejecting invalid characters or decimals
+\end{itemize}
+
+\subsubsection{Addition}
+\begin{itemize}
+    \item Align the numbers by padding with zeros to the right
+    \item Perform digit-by-digit from right to left. Carries are handled as in manual addition
+    \item Handle negative operands via reducing to subtraction
+\end{itemize}
+
+\subsubsection{Subtraction}
+\begin{itemize}
+    \item Align the numbers by padding with zeros to the right
+    \item Subtraction is also performed digit-wise, borrowing as required
+    \item Handle negative operands via reducing to addition or reversing and subtracting
+\end{itemize}
+
+\subsubsection{Multiplication}
+\begin{itemize}
+    \item Multiplication uses the classical long multiplication algorithm
+    \item Each digit of one number is multiplied by each digit of the other, with results appropriately padded with zeros and summed continuously using the \texttt{AInteger.add()} method
+    \item Negative numbers are handled by storing whether both the numbers are negative or only one is negative and accordingly appending $-$ to the beginning of the product.
+\end{itemize}
+
+\subsubsection{Division}
+\begin{itemize}
+    \item Division is implemented using a digit-wise approach similar to manual long division
+    \item The algorithm builds the quotient one digit at a time by using \texttt{AInteger.mul()} and \texttt{AInteger.sub()} to find which digit (0 to 9) to append.
+    \item The function terminates when the divisor becomes greater than the dividend
+    \item Negative numbers are handled by storing whether both the numbers are negative or only one is negative and accordingly appending $-$ to the beginning of the product.
+\end{itemize}
+
+\subsubsection{Handling Signs and Zeros}
+\begin{itemize}
+    \item Preserve sign based on operand parity
+    \item Removing leading zeros
+\end{itemize}
+
+\subsection{AFloat Class}
+
+\subsubsection{Input Validation}
+The \texttt{inputChecker()} method validates floating-point numbers by:
+\begin{itemize}
+    \item Allowing at most one decimal point
+    \item Permitting an optional leading minus sign
+    \item Rejecting invalid characters or multiple decimals
+\end{itemize}
+
+\subsubsection{Addition}
+\begin{itemize}
+    \item Align decimal points by padding with trailing zeros
+    \item Remove decimals and treat as scaled integers
+    \item Use \texttt{AInteger.add()} on the scaled values
+    \item Reinsert decimal at the aligned position
+    \item Handle negative operands via reducing to subtraction
+\end{itemize}
+
+\subsubsection{Subtraction}
+\begin{itemize}
+    \item Align decimal points by padding with trailing zeros
+    \item Convert to scaled integers and use \texttt{AInteger.sub()}
+    \item Reinsert decimal at the aligned position
+    \item Trim trailing zeros while preserving decimal precision
+    \item Handle negative operands via reducing to addition or reversing and subtracting
+\end{itemize}
+
+\subsubsection{Multiplication}
+\begin{itemize}
+    \item Remove decimals and count total fractional digits (\(d_1 + d_2\))
+    \item Multiply scaled integers using \texttt{AInteger.mul()}
+    \item Insert decimal \(d_1 + d_2\) places from the right
+    \item Negative numbers are handled by storing whether both the numbers are negative or only one is negative and accordingly appending $-$ to the beginning of the product.
+\end{itemize}
+
+\subsubsection{Division}
+\begin{itemize}
+    \item Scale numerator and denominator to integers by shifting the decimal point right until they become integers
+    \item Perform long division similar to \texttt{AInteger.div()} operations but instead continue to append zeros to dividend for ensuring precision control (Default: 50 digits which get trimmed to 30)
+    \item Insert decimal by using \texttt{AInteger.div()} to figure out where to insert
+    \item Negative numbers are handled by storing whether both the numbers are negative or only one is negative and accordingly appending $-$ to the beginning of the product.
+\end{itemize}
+
+\subsubsection{Handling Signs and Zeros}
+\begin{itemize}
+    \item Preserve sign based on operand parity
+    \item Normalize results by:
+    \begin{itemize}
+        \item Removing leading zeros before the decimal
+        \item Trimming trailing zeros after the decimal (And other digits if necessary to ensure only 30 digits after decimal point)
+        \item Ensuring single zero before decimals (e.g., \texttt{0.123}, not \texttt{.123})
+        \item Ensuring single zero after decimals (e.g., \texttt{123.0}, not \texttt{123})
+    \end{itemize}
+\end{itemize}
+
+\section{Testing}
+
+Correctness of the functions of these classes was mainly tested manually, with comprehensive test cases for both integer and float operations.
+
+\subsection*{5.1 AInteger}
+\begin{enumerate}
+    \item \(80043 + 230 = 80273\)
+    \item \(-3 + 4 = 1\)
+    \item \(2987112 - 300292 = 2686820\)
+    \item \(11011 - (-29382) = 40393\)
+    \item \(2402726 * 8220887765 = 19752540776047390\)
+    \item \(8219 * (-29882) = -245600158\)
+    \item \(2987611761 / 1876155 = 1592\)
+    \item \(-7627221 / (-887762) = 8\)
+    \item \(2 / 8 = 0\)
+    \item \(32 / 0 = \text{Exception (Division by zero error)}\)
+    \item \(2.0 + 82 = \text{Exception (Invalid input)}\)
+    \item \(20 - 20abc = \text{Exception (Invalid input)}\)
+\end{enumerate}
+
+\subsection*{5.2 AFloat}
+\begin{enumerate}
+    \item \(20.19862 + 198761.122111 = 198781.320731\)
+    \item \(-0.199211 + (-12) = -12.199211\)
+    \item \(90938281.19288128 - 12098871.1209838211 = 78839410.0718974589\)
+    \item \(20938832.20108 - 1000009009.0000900000 = -979070176.79901\)
+    \item \(99873.223232000000 * 1000992.1 = 99972307456.7684672\)
+    \item \(-1.01998881 * 091.988119 = -93.82685203294839\)
+    \item \(3000.109828 / 84.233 = 35.616798974273740695451901273847\)
+    \item \(-0.02288029 / -0.00000009298882099098000 = 246054.200452970673626303913199515254\)
+    \item \(0.08828882 / 0.00000 = \text{Exception (Division by zero error)}\)
+    \item \(-11877.0-92 + 297772.1 = \text{Exception (Invalid input)}\)
+    \item \(230988.12345 * 2345.233.32 = \text{Exception (Invalid input)}\)
+    \item \(123456789.987654321 / \text{abcdefghi.ihgfedcba} = \text{Exception (Invalid input)}\)
+\end{enumerate}
+
+All these answers can be verified to be correct.
+
+\section{Build and Run}
+
+\subsection{Building the package (.JAR):}
+\begin{itemize}
+    \item \texttt{ant clean} followed by \texttt{ant}
+\end{itemize}
+
+\subsection{Executing via MyInfArith:}
+\begin{itemize}
+    \item \texttt{javac MyInfArith.java}
+    \item \texttt{java MyInfArith <int/float> <add/sub/mul/div> <operand1> <operand2>}
+\end{itemize}
+
+\subsection{Executing via codeRunner.py:}
+\begin{itemize}
+    \item \texttt{python codeRunner.py <int/float> <add/sub/mul/div> <operand1> <operand2>}
+\end{itemize}
+
+\subsection{Executing via aarbitraryarithmetic.jar:}
+\begin{itemize}
+    \item \texttt{javac -cp .:<add the absolute path to the .jar package here> <relative path to your desired file>}
+    \item \texttt{java -cp .:<absolute path to .jar package> <relative path to your file>}
+\end{itemize}
+
+\end{document}
